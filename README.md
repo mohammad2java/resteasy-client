@@ -16,19 +16,55 @@ create interface for proxy object and declare method using jaxrs api annotation.
 
 Example:
 ----------
-	public interface SHConnector {
-	
+public interface GorestClient {
+
 	@GET
 	@Path("/public/v2/users")
 	String userList();
 
 	@POST
 	@Path("/public/v2/users")
-	@Consumes("application/json")  
+	@Consumes("application/json")
 	void createUser(String user, @HeaderParam("Authorization") String token);
-	}		
+
+}
+			
+step-3
+---------
+ IMPL class to wrapp inteface
+@Component("gorestClient")
+public class GorestIntegrationImpl implements GorestClient {
+	private GorestClient connector;
+	private ObjectMapper mapper;
+
+	public GorestIntegrationImpl(@Value("${gorest.url}") String url) {
+		super();
+		ResteasyClient client = new ResteasyClientBuilder().build();
+		client.register(AppLoggerFilter.class);  //added filter to logging request
+		ResteasyWebTarget target = client.target(url);
+		connector = target.proxy(GorestClient.class);
+		mapper = new ObjectMapper();  //added mapper for object to json & json to object
+	}
 	
 	
+	
+step-4:
+inject this where you want to call GorestClient
+
+	
+	
+   logging request & response for all request
+   -------------------------------------------
+		   
+		   
+		   public class AppLoggerFilter implements ClientRequestFilter, ClientResponseFilter
+			
+		   
+	
+	
+	
+	
+		
 	more example:
 	---------------
 	public interface SimpleClient
@@ -68,60 +104,4 @@ Here you can use all param annotation-
 	MatrixParam	
 	PathParam	
 	QueryParam
-	
-
-step-3
------------
-
-create Impl class for interface and create proxy object in default constructor.
-
-example:
-----------
-	@Component
-	public class SHConnectorImpl implements SHConnector {
-		private SHConnector shConnector =  null;		
-		public SHConnectorImpl() {
-			super();
-			ResteasyClient client = new ResteasyClientBuilder().build();
-			ResteasyWebTarget target = client.target("http://localhost:8088/");
-			shConnector = target.proxy(SHConnector.class);
-		}
-		@Override
-		public String findStatus() {
-			return shConnector.findStatus();
-		}
-		@Override
-		public String findShowToken(String devact) {
-			return shConnector.findShowToken(devact);
-		}
-	}
-
-	
-step-4
----------
-inject IMPL class whenevr you want to call these methods.
-
-	private GorestClient connector;
-	private ObjectMapper mapper;
-
-	public GorestIntegrationImpl(@Value("${gorest.url}") String url) {
-		super();
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		client.register(AppLoggerFilter.class);  //added filter to logging request
-		ResteasyWebTarget target = client.target(url);
-		connector = target.proxy(GorestClient.class);
-		mapper = new ObjectMapper();  //added mapper for object to json & json to object
-	}
-	
-	
-	
-	
-   logging request & response for all request
-   -------------------------------------------
-		   
-		   
-		   public class AppLoggerFilter implements ClientRequestFilter, ClientResponseFilter
-			
-		   
-	
 	
