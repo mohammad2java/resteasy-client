@@ -16,7 +16,7 @@ create interface for proxy object and declare method using jaxrs api annotation.
 
 Example:
 ----------
-public interface GorestClient {
+	public interface GorestClient {
 
 	@GET
 	@Path("/public/v2/users")
@@ -32,10 +32,11 @@ public interface GorestClient {
 step-3
 ---------
  IMPL class to wrapp inteface
-@Component("gorestClient")
-public class GorestIntegrationImpl implements GorestClient {
-	private GorestClient connector;
-	private ObjectMapper mapper;
+
+	@Component("gorestClient")
+	public class GorestIntegrationImpl implements GorestClient {
+		private GorestClient connector;
+		private ObjectMapper mapper;
 
 	public GorestIntegrationImpl(@Value("${gorest.url}") String url) {
 		super();
@@ -53,10 +54,9 @@ inject this where you want to call GorestClient
 
 	
 	
-   logging request & response for all request
-   -------------------------------------------
-		   
-		   
+logging request & response for all request
+ -------------------------------------------
+		   		   
 		   public class AppLoggerFilter implements ClientRequestFilter, ClientResponseFilter
 			
 		   
@@ -65,8 +65,9 @@ inject this where you want to call GorestClient
 	
 	
 		
-	more example:
-	---------------
+more annotation example:
+-------------------
+	
 	public interface SimpleClient
 		{
 		   @GET
