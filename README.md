@@ -18,16 +18,14 @@ Example:
 ----------
 	public interface SHConnector {
 	
-			@Consumes("application/xml")
-			@GET
-			@Path("/devzone/sysstate.html")
-			public String findStatus();
-			
-			
-			@Consumes("application/xml")
-			@GET
-			@Path("/devzone/sysstate.html")
-			public String findShowToken(@QueryParam("devact") String devact);
+	@GET
+	@Path("/public/v2/users")
+	String userList();
+
+	@POST
+	@Path("/public/v2/users")
+	@Consumes("application/json")  
+	void createUser(String user, @HeaderParam("Authorization") String token);
 	}		
 	
 	
@@ -102,3 +100,28 @@ example:
 step-4
 ---------
 inject IMPL class whenevr you want to call these methods.
+
+	private GorestClient connector;
+	private ObjectMapper mapper;
+
+	public GorestIntegrationImpl(@Value("${gorest.url}") String url) {
+		super();
+		ResteasyClient client = new ResteasyClientBuilder().build();
+		client.register(AppLoggerFilter.class);  //added filter to logging request
+		ResteasyWebTarget target = client.target(url);
+		connector = target.proxy(GorestClient.class);
+		mapper = new ObjectMapper();  //added mapper for object to json & json to object
+	}
+	
+	
+	
+	
+   logging request & response for all request
+   -------------------------------------------
+		   
+		   
+		   public class AppLoggerFilter implements ClientRequestFilter, ClientResponseFilter
+			
+		   
+	
+	
