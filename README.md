@@ -106,3 +106,11 @@ Here you can use all param annotation-
 	PathParam	
 	QueryParam
 	
+
+
+
+
+list of alternative for this client libs/fw
+------------------------------------
+https://square.github.io/retrofit/
+
